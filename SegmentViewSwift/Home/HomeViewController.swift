@@ -36,7 +36,7 @@ class HomeViewController: BaseViewController {
     lazy var headerView: HeaderView = {
         let headerView = HeaderView.init(frame: CGRect.init(x: 0, y: UIApplication.shared.statusBarFrame.height, width: UIScreen.main.bounds.width, height: 50), menuArray: self.homeViewModel.menuArr)
         headerView.headerDelegate = self
-        //
+        //闭包回调
         headerView.headerBlock = {
             (indexPath: IndexPath) -> Void in
             print("点击了\(indexPath.item)")
