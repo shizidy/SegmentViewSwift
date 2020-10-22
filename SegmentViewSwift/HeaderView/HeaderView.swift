@@ -115,7 +115,7 @@ class HeaderView: BaseView {
         }
     }
     
-    //MARK: ========== 懒加载 ==========
+    //MARK: - 懒加载
     lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout.init()
         let collectionView = UICollectionView.init(frame: CGRect.init(x: 0, y: 0, width: self.tempFrame.width, height: self.tempFrame.height), collectionViewLayout: flowLayout)
@@ -146,7 +146,7 @@ class HeaderView: BaseView {
 }
 
 extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    //MARK: ========== UICollectionViewDataSource ==========
+    //MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.tempMenuArr.count
     }
@@ -170,7 +170,7 @@ extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICo
         return cell
     }
     
-    //MARK: ========== UICollectionViewDelegate ==========
+    //MARK: - UICollectionViewDelegate 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize.init(width: self.itemWidth, height: self.tempFrame.height)
     }
@@ -180,13 +180,15 @@ extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICo
             return
         }
         
+        // 协议调用
         self.delegate?.xieyi(indePath: indexPath)
+        // block调用
         self.headerBlock!(indexPath)
         
         //MARK: - collectionView动画
         self.setCollectionViewContentOffsetWithCollectionView(collectionView: self.collectionView, index: indexPath.item)
         
-        //MARK: - slide动画 
+        //MARK: - slide动画
         UIView.animate(withDuration: 0.2) {
             self.slideView.frame = CGRect.init(x: CGFloat(indexPath.item) * self.itemWidth, y: self.slideView.frame.origin.y, width: self.slideView.frame.width, height: self.slideView.frame.height)
 //            self.slideView.transform = CGAffineTransform.init(translationX: CGFloat(indexPath.item)*self.itemWidth, y: 0)
