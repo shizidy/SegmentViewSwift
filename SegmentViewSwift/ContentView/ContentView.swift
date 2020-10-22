@@ -15,30 +15,34 @@ import UIKit
 }
 
 class ContentView: BaseView {
-    
-    weak var contentDelegate: ContentViewDelegate?
+    /// 协议delegate
+    weak var delegate: ContentViewDelegate?
+    /// tempFrame
     var tempFrame: CGRect!
-    var homeVC: BaseViewController!
+    var viewModel: HomeViewModel!
     
-    init(frame: CGRect, viewController: BaseViewController) {
+    
+    init(frame: CGRect, delegate: ContentViewDelegate, viewModel: HomeViewModel) {
         super.init(frame: frame)
         self.tempFrame = frame
-        self.homeVC = viewController
+        self.viewModel = viewModel
+        self.delegate = delegate
+        
         self.backgroundColor = UIColor.white
         self.addSubview(self.scrollView)
-        
     }
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: self.tempFrame.width, height: self.tempFrame.height))
         scrollView.isPagingEnabled = true
-        scrollView.delegate = self 
-        scrollView.contentSize = CGSize.init(width: CGFloat.init(self.homeVC.children.count) * UIScreen.main.bounds.width, height: 0)
+        scrollView.delegate = self
+        let viewController: HomeViewController = self.delegate as! HomeViewController
+        scrollView.contentSize = CGSize.init(width: CGFloat.init(viewController.children.count) * UIScreen.main.bounds.width, height: 0)
         var count = 0
-        for i in 0..<self.homeVC.children.count {
-            let viewController: UIViewController = self.homeVC.children[i]
+        for i in 0..<viewController.children.count {
+            let viewController: UIViewController = viewController.children[i]
             viewController.view.frame = CGRect.init(x: CGFloat.init(i)*self.tempFrame.width, y: 0, width: self.tempFrame.width, height: self.tempFrame.height)
-            viewController.view.backgroundColor = UIColor.init(red: CGFloat.init(arc4random()%256)/255.0, green: CGFloat.init(arc4random()%256)/255.0, blue: CGFloat.init(arc4random()%256)/255.0, alpha: 1.0)
+            viewController.view.backgroundColor = UIColor.init(red: CGFloat.init(arc4random() % 256) / 255.0, green: CGFloat.init(arc4random() % 256) / 255.0, blue: CGFloat.init(arc4random() % 256) / 255.0, alpha: 1.0)
             scrollView.addSubview(viewController.view)
         }
         return scrollView
@@ -61,15 +65,15 @@ class ContentView: BaseView {
 
 }
 
-//MARK: ========== UIScrollViewDelegate ==========
+//MARK: - UIScrollViewDelegate 
 extension ContentView: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        self.contentDelegate?.scrollViewBeginDragging(scrollView: scrollView)
+        self.delegate?.scrollViewBeginDragging(scrollView: scrollView)
     }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.contentDelegate?.scrollViewScroll(scrollView: scrollView)
+        self.delegate?.scrollViewScroll(scrollView: scrollView)
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.contentDelegate?.scrollViewEndDecelerating(scrollView: scrollView)
+        self.delegate?.scrollViewEndDecelerating(scrollView: scrollView)
     }
 }

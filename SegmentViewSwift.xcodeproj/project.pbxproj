@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		74EDE2C9254156DE005CCA03 /* SegmentViewDefine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EDE2C8254156DE005CCA03 /* SegmentViewDefine.swift */; };
 		9A0E85D3222E47F40001F1E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0E85D2222E47F40001F1E0 /* AppDelegate.swift */; };
 		9A0E85D5222E47F40001F1E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0E85D4222E47F40001F1E0 /* ViewController.swift */; };
 		9A0E85D8222E47F40001F1E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A0E85D6222E47F40001F1E0 /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		74EDE2C8254156DE005CCA03 /* SegmentViewDefine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentViewDefine.swift; sourceTree = "<group>"; };
 		9A0E85CF222E47F40001F1E0 /* SegmentViewSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SegmentViewSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A0E85D2222E47F40001F1E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9A0E85D4222E47F40001F1E0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				9A0E85D9222E47F60001F1E0 /* Assets.xcassets */,
 				9A0E85DB222E47F60001F1E0 /* LaunchScreen.storyboard */,
 				9A0E85DE222E47F60001F1E0 /* Info.plist */,
+				74EDE2C8254156DE005CCA03 /* SegmentViewDefine.swift */,
 			);
 			path = SegmentViewSwift;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 				9A0E8602222E48FB0001F1E0 /* BaseView.swift in Sources */,
 				9A0E860A222E4A420001F1E0 /* HeaderView.swift in Sources */,
 				9A0E8608222E4A2D0001F1E0 /* ContentView.swift in Sources */,
+				74EDE2C9254156DE005CCA03 /* SegmentViewDefine.swift in Sources */,
 				9A0E860F222E4AB30001F1E0 /* HomeViewModel.swift in Sources */,
 				9A0E8604222E490C0001F1E0 /* BaseViewController.swift in Sources */,
 				9A0E85D5222E47F40001F1E0 /* ViewController.swift in Sources */,
@@ -498,7 +502,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = wdy.SegmentViewSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -516,7 +520,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = wdy.SegmentViewSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

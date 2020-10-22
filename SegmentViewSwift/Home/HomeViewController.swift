@@ -9,6 +9,7 @@
 import UIKit
 
 class HomeViewController: BaseViewController {
+    var startX: CGFloat = 0.0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,9 +17,9 @@ class HomeViewController: BaseViewController {
         // Do any additional setup after loading the view.
     }
     
-    //MARK: ========== 重写父类方法 ==========
+    //MARK: - 重写父类方法
     override func setUI() {
-        for _ in 0..<self.homeViewModel.menuArr.count {
+        for _ in 0..<self.viewModel.menuArray.count {
             let baseVC = BaseViewController.init()
             self.addChild(baseVC)
         }
@@ -27,15 +28,14 @@ class HomeViewController: BaseViewController {
         self.view.addSubview(self.contentView)
     }
     
-    //MARK: ========== 懒加载 ==========
-    lazy var homeViewModel: HomeViewModel = {
-        var homeViewModel = HomeViewModel.init()
-        return homeViewModel
+    //MARK: - 懒加载
+    lazy var viewModel: HomeViewModel = {
+        var viewModel = HomeViewModel.init()
+        return viewModel
     }()
     
     lazy var headerView: HeaderView = {
-        let headerView = HeaderView.init(frame: CGRect.init(x: 0, y: UIApplication.shared.statusBarFrame.height, width: UIScreen.main.bounds.width, height: 50), menuArray: self.homeViewModel.menuArr)
-        headerView.headerDelegate = self
+        let headerView = HeaderView.init(frame: CGRect.init(x: 0, y: UIApplication.shared.statusBarFrame.height, width: UIScreen.main.bounds.width, height: 50), delegate: self, viewModel: self.viewModel)
         //闭包回调
         headerView.headerBlock = {
             (indexPath: IndexPath) -> Void in
@@ -45,8 +45,7 @@ class HomeViewController: BaseViewController {
     }()
     
     lazy var contentView: ContentView = {
-        let contentView = ContentView.init(frame: CGRect.init(x: 0, y: self.headerView.frame.maxY, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - self.headerView.frame.maxY), viewController: self)
-        contentView.contentDelegate = self
+        let contentView = ContentView.init(frame: CGRect.init(x: 0, y: self.headerView.frame.maxY, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - self.headerView.frame.maxY), delegate: self, viewModel: self.viewModel)
         return contentView
     }()
     /*

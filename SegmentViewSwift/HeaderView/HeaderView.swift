@@ -8,23 +8,25 @@
 
 import UIKit
 
-//MARK: ========== 闭包（相当于OC的block） ==========
+//MARK: - 闭包（相当于OC的block）
 typealias bibao = (_ indexPath: IndexPath) -> Void
 
-//MARK: ========== 协议 ==========
+//MARK: - 协议
 @objc protocol HeaderViewDelegate {
     func xieyi(indePath: IndexPath)
+//    func <#name#>(parameters) -> Void
 }
 
 class HeaderView: BaseView {
     
-    var headerBlock: bibao?//闭包（相当于OC的block）
-    weak var headerDelegate: HeaderViewDelegate?//协议
+    var headerBlock: bibao?  // 闭包（相当于OC的block）
+    weak var delegate: HeaderViewDelegate?  // 协议
     private var tempFrame: CGRect!
     private var tempMenuArr: NSMutableArray!
     private var fontArr: NSMutableArray = NSMutableArray.init()
     private var itemWidth: CGFloat = 0.0
-    private let screenNumofItem = 5
+    private var viewModel: HomeViewModel!
+        
     var startOffsetX: CGFloat = 0.0 {//记录contentView的scrollView的cntentOffset.x
         willSet {
             
@@ -38,10 +40,10 @@ class HeaderView: BaseView {
         }
         didSet {
             //滑标
-            self.slideView.frame = CGRect.init(x: self.offsetX/CGFloat.init(self.screenNumofItem), y: self.slideView.frame.origin.y, width: self.slideView.frame.width, height: self.slideView.frame.height)
+            self.slideView.frame = CGRect.init(x: self.offsetX / CGFloat(self.viewModel.titleItemNum), y: self.slideView.frame.origin.y, width: self.slideView.frame.width, height: self.slideView.frame.height)
             //字体
-            let index = NSInteger.init(self.offsetX/self.tempFrame.width)
-            let rate = (self.offsetX - CGFloat.init(index)*self.tempFrame.width)/self.tempFrame.width/4
+            let index = NSInteger(self.offsetX / self.tempFrame.width)
+            let rate = (self.offsetX - CGFloat(index) * self.tempFrame.width) / self.tempFrame.width / 4
             if self.startOffsetX < self.offsetX {//向右
                 if index == self.tempMenuArr.count - 1 {
                     self.fontArr.replaceObject(at: index, with: 0.25 + 1 - rate)
@@ -60,30 +62,26 @@ class HeaderView: BaseView {
             }
             self.collectionView.reloadData()
             
-            if index <= NSInteger.init(self.screenNumofItem/2) {
-                self.collectionView.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
-            }
-            
-            if index > NSInteger.init(self.screenNumofItem/2) && index < self.tempMenuArr.count - NSInteger.init(self.screenNumofItem/2) {
-                self.collectionView.setContentOffset(CGPoint.init(x: CGFloat.init(index - NSInteger.init(self.screenNumofItem/2))*self.itemWidth, y: 0), animated: true)
-            }
-            
-            if index >= self.tempMenuArr.count - NSInteger.init(self.screenNumofItem/2) {
-                self.collectionView.setContentOffset(CGPoint.init(x: self.collectionView.contentSize.width - self.tempFrame.width, y: 0), animated: true)
-            }
+            self.setCollectionViewContentOffsetWithCollectionView(collectionView: self.collectionView, index: index)
         }
     }
     
-    
-    
-    init(frame: CGRect, menuArray: NSMutableArray) {
+    /// 构造方法
+    /// - Parameters:
+    ///   - frame: frame
+    ///   - delegate: 协议delegate
+    ///   - viewModel: 数据model
+    init(frame: CGRect, delegate: HeaderViewDelegate, viewModel: HomeViewModel) {
         super.init(frame: frame)
         self.tempFrame = frame
-        self.tempMenuArr = menuArray
-        if self.tempMenuArr.count < self.screenNumofItem {
-            self.itemWidth = self.tempFrame.width/CGFloat.init(self.tempMenuArr.count)
+        self.tempMenuArr = viewModel.menuArray
+        self.delegate = delegate
+        self.viewModel = viewModel
+        
+        if self.tempMenuArr.count < self.viewModel.titleItemNum {
+            self.itemWidth = self.tempFrame.width / CGFloat(self.tempMenuArr.count)
         } else {
-            self.itemWidth = self.tempFrame.width/CGFloat.init(self.screenNumofItem)
+            self.itemWidth = self.tempFrame.width / CGFloat(self.viewModel.titleItemNum)
         }
         for i in 0..<self.tempMenuArr.count {
             switch i {
@@ -102,6 +100,21 @@ class HeaderView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - collectionView contentOffset动画
+    func setCollectionViewContentOffsetWithCollectionView(collectionView: UICollectionView, index: NSInteger) -> Void {
+        if index <= NSInteger(self.viewModel.titleItemNum / 2) {
+            collectionView.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
+        }
+        
+        if index > NSInteger(self.viewModel.titleItemNum / 2) && index < self.tempMenuArr.count - NSInteger(self.viewModel.titleItemNum / 2) {
+            collectionView.setContentOffset(CGPoint.init(x: CGFloat(index - NSInteger(self.viewModel.titleItemNum / 2)) * self.itemWidth, y: 0), animated: true)
+        }
+        
+        if index >= self.tempMenuArr.count - NSInteger(self.viewModel.titleItemNum / 2) {
+            collectionView.setContentOffset(CGPoint.init(x: self.collectionView.contentSize.width - self.tempFrame.width, y: 0), animated: true)
+        }
+    }
+    
     //MARK: ========== 懒加载 ==========
     lazy var collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout.init()
@@ -118,8 +131,8 @@ class HeaderView: BaseView {
     }()
     
     lazy var slideView: UIView = {
-        let slideView = UIView.init(frame: CGRect.init(x: 0, y: self.tempFrame.height - 2, width: self.itemWidth, height: 2))
-        slideView.backgroundColor = UIColor.red
+        let slideView = UIView.init(frame: CGRect.init(x: 0, y: self.tempFrame.height - 4, width: self.itemWidth, height: 4))
+        slideView.backgroundColor = UIColor.white
         return slideView
     }()
     /*
@@ -133,7 +146,6 @@ class HeaderView: BaseView {
 }
 
 extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
     //MARK: ========== UICollectionViewDataSource ==========
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.tempMenuArr.count
@@ -164,30 +176,20 @@ extension HeaderView: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if self.slideView.frame.minX == CGFloat.init(indexPath.item)*self.itemWidth  {
+        if self.slideView.frame.minX == CGFloat(indexPath.item) * self.itemWidth  {
             return
         }
         
-        self.headerDelegate?.xieyi(indePath: indexPath)
+        self.delegate?.xieyi(indePath: indexPath)
         self.headerBlock!(indexPath)
         
-        //MARK: ========== collectionView动画 ==========
-        if indexPath.item <= NSInteger.init(self.screenNumofItem/2) {
-            self.collectionView.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
-        }
+        //MARK: - collectionView动画
+        self.setCollectionViewContentOffsetWithCollectionView(collectionView: self.collectionView, index: indexPath.item)
         
-        if indexPath.item > NSInteger.init(self.screenNumofItem/2) && indexPath.item < self.tempMenuArr.count - NSInteger.init(self.screenNumofItem/2) {
-            self.collectionView.setContentOffset(CGPoint.init(x: CGFloat.init(indexPath.item - NSInteger.init(self.screenNumofItem/2))*self.itemWidth, y: 0), animated: true)
-        }
-        
-        if indexPath.item >= self.tempMenuArr.count - NSInteger.init(self.screenNumofItem/2) {
-            self.collectionView.setContentOffset(CGPoint.init(x: self.collectionView.contentSize.width - self.tempFrame.width, y: 0), animated: true)
-        }
-        
-        //MARK: ========== slide动画 ==========
+        //MARK: - slide动画 
         UIView.animate(withDuration: 0.2) {
-            self.slideView.frame = CGRect.init(x: CGFloat.init(indexPath.item)*self.itemWidth, y: self.slideView.frame.origin.y, width: self.slideView.frame.width, height: self.slideView.frame.height)
-//            self.slideView.transform = CGAffineTransform.init(translationX: CGFloat.init(indexPath.item)*self.itemWidth, y: 0)
+            self.slideView.frame = CGRect.init(x: CGFloat(indexPath.item) * self.itemWidth, y: self.slideView.frame.origin.y, width: self.slideView.frame.width, height: self.slideView.frame.height)
+//            self.slideView.transform = CGAffineTransform.init(translationX: CGFloat(indexPath.item)*self.itemWidth, y: 0)
         }
         
         for i in 0..<self.tempMenuArr.count {
