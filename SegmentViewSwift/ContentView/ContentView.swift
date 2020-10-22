@@ -36,14 +36,16 @@ class ContentView: BaseView {
         let scrollView = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: self.tempFrame.width, height: self.tempFrame.height))
         scrollView.isPagingEnabled = true
         scrollView.delegate = self
-        let viewController: HomeViewController = self.delegate as! HomeViewController
-        scrollView.contentSize = CGSize.init(width: CGFloat.init(viewController.children.count) * UIScreen.main.bounds.width, height: 0)
+        let rooVC: HomeViewController = self.delegate as! HomeViewController
+        scrollView.contentSize = CGSize.init(width: CGFloat.init(rooVC.children.count) * UIScreen.main.bounds.width, height: 0)
+        
         var count = 0
-        for i in 0..<viewController.children.count {
-            let viewController: UIViewController = viewController.children[i]
-            viewController.view.frame = CGRect.init(x: CGFloat.init(i)*self.tempFrame.width, y: 0, width: self.tempFrame.width, height: self.tempFrame.height)
-            viewController.view.backgroundColor = UIColor.init(red: CGFloat.init(arc4random() % 256) / 255.0, green: CGFloat.init(arc4random() % 256) / 255.0, blue: CGFloat.init(arc4random() % 256) / 255.0, alpha: 1.0)
-            scrollView.addSubview(viewController.view)
+        for i in 0..<rooVC.children.count {
+            let childVC: BaseViewController = rooVC.children[i] as! BaseViewController
+            childVC.view.frame = CGRect.init(x: CGFloat(i) * self.tempFrame.width, y: 0, width: self.tempFrame.width, height: self.tempFrame.height)
+            childVC.view.backgroundColor = UIColor.init(red: CGFloat.init(arc4random() % 256) / 255.0, green: CGFloat.init(arc4random() % 256) / 255.0, blue: CGFloat.init(arc4random() % 256) / 255.0, alpha: 1.0)
+            
+            scrollView.addSubview(childVC.view)
         }
         return scrollView
     }()

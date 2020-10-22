@@ -19,9 +19,18 @@ class HomeViewController: BaseViewController {
     
     //MARK: - 重写父类方法
     override func setUI() {
-        for _ in 0..<self.viewModel.menuArray.count {
-            let baseVC = BaseViewController.init()
-            self.addChild(baseVC)
+        for i in 0..<self.viewModel.menuArray.count {
+            let childVC = BaseViewController.init()
+            //
+            let label = UILabel.init(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
+            label.text = self.viewModel.menuArray[i] as? String
+            label.textAlignment = .center
+            label.textColor = .orange
+            label.backgroundColor = .white
+            label.center = childVC.view.center
+            //
+            childVC.view.addSubview(label)
+            self.addChild(childVC)
         }
         
         self.view.addSubview(self.headerView)
@@ -61,7 +70,7 @@ class HomeViewController: BaseViewController {
 }
 
 extension HomeViewController: HeaderViewDelegate, ContentViewDelegate {
-    
+    //MARK: - ContentViewDelegate
     func scrollViewBeginDragging(scrollView: UIScrollView) {
         self.headerView.startOffsetX = scrollView.contentOffset.x
     }
@@ -75,9 +84,8 @@ extension HomeViewController: HeaderViewDelegate, ContentViewDelegate {
     }
     
     
-    //MARK: ========== HeaderViewDelegate ==========
+    //MARK: - HeaderViewDelegate
     func xieyi(indePath: IndexPath) {
-        print(indePath.item)
         self.contentView.scrollView.setContentOffset(CGPoint.init(x: CGFloat.init(indePath.item)*UIScreen.main.bounds.width, y: 0), animated: false)
     }
 }

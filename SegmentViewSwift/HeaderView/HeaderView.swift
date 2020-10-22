@@ -62,6 +62,7 @@ class HeaderView: BaseView {
             }
             self.collectionView.reloadData()
             
+            // 更新contentOffset
             self.setCollectionViewContentOffsetWithCollectionView(collectionView: self.collectionView, index: index)
         }
     }
